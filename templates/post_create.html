@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Create</title>
+</head>
+<body>
+    <h1>New Post</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+<!--        enctype表示用什么形式加密压缩，因为我们需要的信息既有text也有image即多媒体文件，所以用multipart-->
+<!--        csrf_token是为了保护security-->
+        {% csrf_token %}
+<!--        把form里每一个元素当作p来显示-->
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>
