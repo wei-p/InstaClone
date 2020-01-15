@@ -1,37 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>index</title>
-    {% load static %}
-</head>
-<body>
-    <ul>
-        {% if request.user.is_authenticated %}
-            <li>
-                Hi, {{ request.user.username }} !
-            </li>
-            <li>
-                <a href="{% url 'logout' %}">Logout</a>
-            </li>
-        {% else %}
-            <li>
-                <a href="{% url 'login' %}">Login</a>
-            </li>
-            <li>
-                <a href="{% url 'signup' %}">Sign up</a>
-            </li>
-        {% endif %}
-    </ul>
-    <div>
-        <a href="{% url 'make_post' %}">Make Post</a>
-    </div>
-    <div>
-        {% for post in object_list %}
-            <a href="{% url 'post_detail' post.id %}">
-                <img src="/{{post.image}}" alt="" width="200" height="200">
-            </a>
-        {% endfor %}
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% load custom_tags %}
+
+{% block content %}
+
+<div class="cards-listing">
+    {% for post in object_list %}
+        <div class="row">
+            <div class="card view-update {{ post.pk }}">
+
+                <div class="card__panel-head">
+                    <div class="poster__info">
+                        <a href="{% url 'user_detail' post.author.id %}" class="poster__name">
+                            {% if post.author.profile_pic %}
+                                <img class="poster__profilepic" src="/{{ post.author.profile_pic }}">
+                            {% endif %}
+                            {{ post.author.username }}
+                        </a>
+                    </div>
+                </div>
+
+                <a href="{% url 'post_detail' post.pk %}">
+                    <img class="card__main-image" src="/{{ post.image }}">
+                </a>
+
+                <div class="card__panel-body">
+                    <div class="likes">
+                        {% if post.get_like_count %}
+                            {{ post.get_like_count }} like{% if post.get_like_count > 1 %}s{% endif %}
+                        {% endif %}
+                    </div>
+                    <section class="input-row">
+                        <i class="fa {% has_user_liked_post post user %} submit-like" aria-hidden="true"></i>
+                        <div class="hidden-data {{ post.pk }}" style="display: none;">
+                            <span class="post-pk">{{ post.pk }}</span>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}
