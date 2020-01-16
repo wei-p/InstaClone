@@ -3,7 +3,7 @@ from imagekit.models import ProcessedImageField
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+
 class InstaUser(AbstractUser):
     profile_pic = ProcessedImageField(
         upload_to='static/images/profiles',
