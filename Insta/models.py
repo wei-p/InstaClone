@@ -25,6 +25,9 @@ class InstaUser(AbstractUser):
         followers = UserConnection.objects.filter(following=self)
         return followers.filter(creator=user).exists()
 
+    def get_absolute_url(self):
+        return reverse("user_detail", args=[str(self.id)])
+
 
 class UserConnection(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)

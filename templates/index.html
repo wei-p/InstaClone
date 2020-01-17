@@ -23,8 +23,8 @@
                 <a href="{% url 'post_detail' post.pk %}">
                     <img class="card__main-image" src="/{{ post.image }}">
                 </a>
-
                 <div class="card__panel-body">
+                    <section class="input-row">{{ post.title }}</section>
                     <div class="likes">
                         {% if post.get_like_count %}
                             {{ post.get_like_count }} like{% if post.get_like_count > 1 %}s{% endif %}
@@ -35,6 +35,9 @@
                         <div class="hidden-data {{ post.pk }}" style="display: none;">
                             <span class="post-pk">{{ post.pk }}</span>
                         </div>
+                        {% if not request.user.is_authenticated %}
+                            <div>Login in to like this post !</div>
+                        {% endif %}
                     </section>
                 </div>
             </div>

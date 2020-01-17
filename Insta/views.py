@@ -26,6 +26,11 @@ class PostsView(ListView):
         return Post.objects.filter(author__in=following)
 
 
+class ExploreView(ListView):
+    model = Post
+    template_name = 'explore.html'
+
+
 class PostDetailView(DetailView):
     model = Post
     template_name = 'post_detail.html'
@@ -46,7 +51,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(UpdateView):
     model = Post
     template_name = 'post_update.html'
-    fields = ['title']
+    fields = ['title', 'image']
 
 
 class PostDeleteView(DeleteView):
@@ -58,6 +63,12 @@ class PostDeleteView(DeleteView):
 class UserDetailView(DetailView):
     model = InstaUser
     template_name = 'user_detail.html'
+
+
+class UserDetailUpdateView(UpdateView):
+    model = InstaUser
+    template_name = 'user_detail_update.html'
+    fields = ['username', 'profile_pic']
 
 
 class SignUp(CreateView):
@@ -85,3 +96,29 @@ def addLike(request):
         'post_pk': post_pk
     }
 
+
+@ajax_request
+def toggleFollow(request):
+    current_user = InstaUser.objects.get(pk=request.user.pk)
+    follow_user_pk = request.POST.get('follow_user_pk')
+    follow_user = InstaUser.objects.get(pk=follow_user_pk)
+
+    try:
+        if current_user != follow_user:
+            if request.POST.get('type') == 'follow':
+                connection = UserConnection(creator=current_user, following=follow_user)
+                connection.save()
+            elif request.POST.get('type') == 'unfollow':
+                UserConnection.objects.filter(creator=current_user, following=follow_user).delete()
+            result = 1
+        else:
+            result = 0
+    except Exception as e:
+        print(e)
+        result = 0
+
+    return {
+        'result': result,
+        'type': request.POST.get('type'),
+        'follow_user_pk': follow_user_pk
+    }

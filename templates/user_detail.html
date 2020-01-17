@@ -17,7 +17,9 @@
                 <div class="name-buttons">
                     <h1 class="username">{{ object.username }}</h1>
                     {% if user == object %}
-                        <button class="edit-profile">Edit Profile</button>
+                        <a href="{% url 'update_user_detail' user.id %}">
+                            <button class="edit-profile">Edit Profile</button>
+                        </a>
                     {% else %}
                         {% is_following user object as following %}
                         <div class="follow-toggle__container">
